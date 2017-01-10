@@ -675,7 +675,6 @@ class CI_Security {
 		$flag = is_php('5.4')
 			? ENT_COMPAT | ENT_HTML5
 			: ENT_COMPAT;
-
 		if ( ! isset($_entities))
 		{
 			$_entities = array_map('strtolower', get_html_translation_table(HTML_ENTITIES, $flag, $charset));

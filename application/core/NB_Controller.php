@@ -151,7 +151,7 @@ class NB_Controller extends CI_Controller {
 	}
 	
 	protected function post($str, $type = 'normal', $default = null){
-		$str = $this->input->post($str, TRUE);
+		$str = $this->input->post($str);
 		$str = $this->valid($str, $type);
 		if(is_null($str) and !is_null($default)){
 			$str = $default;
@@ -159,14 +159,14 @@ class NB_Controller extends CI_Controller {
 		return $str;
 	}
 	
-	protected function get_post($str, $type = 'normal', $default = null){
-		$str = $this->input->get_post($str, TRUE);
-		$str = $this->valid($str, $type);
-		if(is_null($str) and !is_null($default)){
-			$str = $default;
-		}
-		return $str;
-	}
+	// protected function get_post($str, $type = 'normal', $default = null){
+	// 	$str = $this->input->get_post($str);
+	// 	$str = $this->valid($str, $type);
+	// 	if(is_null($str) and !is_null($default)){
+	// 		$str = $default;
+	// 	}
+	// 	return $str;
+	// }
 	
 	protected function valid ($str, $type = 'normal') {
 		if (is_array($str)) {

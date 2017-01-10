@@ -30,8 +30,15 @@ class Product extends NB_Controller {
 
 		}
 		$obj->desc = $desc;
-		// var_dump($obj);die;
+		$pic = $this->post('pic');
+		if(empty($pic)){
+
+		}
+		$obj->pic = $pic;
 		$this->product_mdl->set($obj);
 		$this->output_json();
+	}
+	public function getlist(){
+		
 	}
 }

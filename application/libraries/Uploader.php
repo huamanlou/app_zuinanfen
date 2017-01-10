@@ -1,13 +1,6 @@
-<?php
-/**
- * Created by JetBrains PhpStorm.
- * User: taoqili
- * Date: 12-7-18
- * Time: 上午11: 32
- * UEditor编辑器通用上传类
- */
-class Uploader
-{
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Uploader extends CI_Controller {
     private $fileField;            //文件域名
     private $file;                 //文件上传对象
     private $config;               //配置信息
@@ -40,12 +33,14 @@ class Uploader
      * @param array $config  配置项
      * @param bool $base64  是否解析base64编码，可省略。若开启，则$fileField代表的是base64编码的字符串表单名
      */
-    public function __construct( $fileField , $config , $base64 = false )
+    public function __construct( $param)
     {
-        $this->fileField = $fileField;
-        $this->config = $config;
+
+        $this->ci = & get_instance();
+        $this->fileField = $param['fileField'];
+        $this->config = $param['config'];
         $this->stateInfo = $this->stateMap[ 0 ];
-        $this->upFile( $base64 );
+        $this->upFile(false);
     }
 
     /**
@@ -100,7 +95,7 @@ class Uploader
         $this->fullName = $folder . '/' . $this->getName();
 
         if ( $this->stateInfo == $this->stateMap[ 0 ] ) {
-            if ( !move_uploaded_file( $file[ "tmp_name" ] , $this->fullName ) ) {
+            if ( !move_uploaded_file( $file[ "tmp_name" ] , FCPATH . $this->fullName ) ) {
                 $this->stateInfo = $this->getStateInfo( "MOVE" );
             }
         }
@@ -134,7 +129,8 @@ class Uploader
         return array(
             "originalName" => $this->oriName ,
             "name" => $this->fileName ,
-            "url" => $this->fullName ,
+           // "url" => 'http://'.$_SERVER['HTTP_HOST'].$this->fullName ,
+            'url' =>  $this->fullName ,
             "size" => $this->fileSize ,
             "type" => $this->fileType ,
             "state" => $this->stateInfo
@@ -193,13 +189,13 @@ class Uploader
      */
     private function getFolder()
     {
-        $pathStr = $this->config[ "savePath" ];
-        if ( strrchr( $pathStr , "/" ) != "/" ) {
-            $pathStr .= "/";
+        $path = $this->config[ "savePath" ];
+        if ( strrchr( $path , "/" ) != "/" ) {
+            $path .= "/";
         }
-        $pathStr .= date( "Ymd" );
-        if ( !file_exists( $pathStr ) ) {
-            if ( !mkdir( $pathStr , 0777 , true ) ) {
+        $pathStr = $path.date( "Ymd" );
+        if ( !file_exists( FCPATH.$pathStr ) ) {
+            if ( !mkdir( FCPATH.$pathStr , 0777 , true ) ) {
                 return false;
             }
         }
