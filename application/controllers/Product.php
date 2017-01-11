@@ -39,6 +39,30 @@ class Product extends NB_Controller {
 		$this->output_json();
 	}
 	public function getlist(){
-		
+		$page = $this->get('page');
+		if(empty($page)){
+			$page=1;
+		}
+
+		$res = $this->product_mdl->list_by_status($page);
+
+		foreach ($res as $k => $v) {
+			unset($res[$k]['userId']);
+			unset($res[$k]['mtime']);
+			$res[$k]['pic'] = $this->config->item('cdn_host').$res[$k]['pic'];
+			$res[$k]['desc'] = htmlspecialchars(urldecode($res[$k]['desc']),ENT_QUOTES);
+		}
+
+
+		$this->output_json($res);
+	}
+	public function show(){
+		$id = $this->get('id');
+		if(empty($page)){
+
+		}
+		$detail = $this->product_mdl->get($id);
+		$detail['pic'] = $this->config->item('cdn_host').$detail['pic'];
+		$this->output_json($detail);
 	}
 }

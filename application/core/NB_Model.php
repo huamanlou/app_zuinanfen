@@ -35,7 +35,10 @@ abstract class NB_Model extends CI_Model {
 		$this->db->where('id',$id); 
 		$query = $this->db->get(); 
 		if($query && $query->num_rows() > 0){ 
-			$res = $query->row_object(); 
+			// $res = $query->row_object(); 
+			$res = $query->row_array();
+		}else{
+			return array();
 		}
 
         //$this->set_by_kvcache(static::T_NAME, $id, $res);
