@@ -23,21 +23,18 @@
 <body>
 
 <div>
-	<form onsubmit="return false;">
-		标题：<input name="title" type="text" value="" />
-		简介：<input name="abstract" type="text" value="" />
-		详情：
-		<textarea name="desc" id="desc" style="display:none"></textarea>
-		<input type="file" name="upfile" id="upfile" />
-		<input type="hidden" name="pic" id="pic" />
-		<button id="sub_btn">提交</button>
-	</form>
-		<!-- 加载编辑器的容器 -->
-	    <script id="editor" style="width:700px;height:360px;" type="text/plain">
-	        这里写你的初始化内容
-	    </script>
+	标题：<input id="title" name="title" type="text" value="" />
+	简介：<input name="abstract" id="abstract" type="text" value="" />
+	详情：
+	<input type="file" name="upfile" id="upfile" />
+	<button id="sub_btn">提交</button>
+	<!-- 加载编辑器的容器 -->
+    <script id="editor" style="width:700px;height:360px;" type="text/plain">
+        这里写你的初始化内容
+    </script>
 </div>
 <script type="text/javascript">
+	var picArr = [];
 	//实例化编辑器
     var um = UM.getEditor('editor', {
             focus: true,
@@ -52,7 +49,8 @@
 	        onUploadSuccess : function(file, data, response) {
 	        	var json = JSON.parse(data);
 	        	var url = json.url;
-	        	$('#pic').val(url);
+	        	picArr.push(url);
+	        	console.log(picArr);
 	        }
 	    });
     });
@@ -60,13 +58,17 @@
 
 	$('#sub_btn').click(function(){
 		var desc =  um.getContent();
-		$('#desc').val(encodeURIComponent(desc));
-		var data = $('form').serialize();
-		// console.log(data);return false;
+		var data = {
+			title: encodeURIComponent($('#title').val()),
+			abstract: encodeURIComponent($('#abstract').val()),
+			desc: encodeURIComponent(desc),
+			pic: encodeURIComponent(JSON.stringify(picArr))
+		}
+		console.log(data);
 		$.ajax({
 			type: 'post',
 			url: '/index.php/product/publish',
-			data: $("form").serialize(),
+			data: data,
 			dataType:'json',
 			success: function(json) {
 			    console.log(json);

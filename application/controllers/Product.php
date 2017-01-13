@@ -34,6 +34,7 @@ class Product extends NB_Controller {
 		if(empty($pic)){
 
 		}
+		// var_dump(urldecode($pic));die;
 		$obj->pic = $pic;
 		$this->product_mdl->set($obj);
 		$this->output_json();
@@ -49,10 +50,13 @@ class Product extends NB_Controller {
 		foreach ($res as $k => $v) {
 			unset($res[$k]['userId']);
 			unset($res[$k]['mtime']);
-			$res[$k]['pic'] = $this->config->item('cdn_host').$res[$k]['pic'];
+			$picArr = json_decode(urldecode($res[$k]['pic']),true);
+			$res[$k]['pic'] = array();
+			foreach ($picArr as $key => $value) {
+				array_push($res[$k]['pic'], $this->config->item('cdn_host').$value);
+			}
 			$res[$k]['desc'] = htmlspecialchars(urldecode($res[$k]['desc']),ENT_QUOTES);
 		}
-
 
 		$this->output_json($res);
 	}
@@ -62,7 +66,11 @@ class Product extends NB_Controller {
 
 		}
 		$detail = $this->product_mdl->get($id);
-		$detail['pic'] = $this->config->item('cdn_host').$detail['pic'];
+		$picArr = json_decode(urldecode($detail['pic']),true);
+		$detail['pic'] = array();
+		foreach ($picArr as $key => $value) {
+			array_push($detail['pic'], $this->config->item('cdn_host').$value);
+		}
 		$this->output_json($detail);
 	}
 }
